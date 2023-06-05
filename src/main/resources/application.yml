@@ -1,0 +1,25 @@
+server:
+  port: 8088
+
+#配置数据源  datasource
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test1?serverTimezone=UTC
+    username: root
+    password: 123456
+
+  jpa:
+    database: mysql #指定你使用数据库
+    show-sql: true #展示sql语句
+    hibernate:
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
+      ddl-auto: update #自动
+  main:
+    allow-bean-definition-overriding: true
+
+  #swigger-ui配置
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
