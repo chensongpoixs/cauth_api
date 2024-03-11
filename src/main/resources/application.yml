@@ -1,25 +1,25 @@
-server:
-  port: 8088
+ï»¿server:
+  port: 8988
 
-#ÅäÖÃÊı¾İÔ´  datasource
+#é…ç½®æ•°æ®æº  datasource
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/test1?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/global_test?serverTimezone=UTC
     username: root
-    password: 123456
+    password:
 
   jpa:
-    database: mysql #Ö¸¶¨ÄãÊ¹ÓÃÊı¾İ¿â
-    show-sql: true #Õ¹Ê¾sqlÓï¾ä
+    database: mysql #æŒ‡å®šä½ ä½¿ç”¨æ•°æ®åº“
+    show-sql: true #å±•ç¤ºsqlè¯­å¥
     hibernate:
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
-      ddl-auto: update #×Ô¶¯
+      ddl-auto: update #è‡ªåŠ¨
   main:
     allow-bean-definition-overriding: true
 
-  #swigger-uiÅäÖÃ
+  #swigger-uié…ç½®
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
