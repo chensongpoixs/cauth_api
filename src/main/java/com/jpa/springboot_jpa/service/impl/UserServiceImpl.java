@@ -1,6 +1,6 @@
 package com.jpa.springboot_jpa.service.impl;
 
-import com.jpa.springboot_jpa.mapper.UserRepository;
+import com.jpa.springboot_jpa.repository.UserRepository;
 import com.jpa.springboot_jpa.pojo.User;
 import com.jpa.springboot_jpa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findById(Integer id) {
         return jpa.findById(id);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username)
+    {
+//        jpa.findByUserName()
+        return jpa.findByUserName(username);
+    }
+
+    @Override
+    /*
+    1：方法的返回值应该是int，表示更新语句所影响的行数
+2：在调用的地方必须加事务，没有事务不能正常执行
+     */
+    @Transactional
+    public int updateByUsernameToken(String username, String token)
+    {
+          return jpa.updateUsernameToken(username, token);
+//          return 0;
+    }
+
+    @Override
+    @Transactional
+    public int updateByUsernamePassword(String username, String password)
+    {
+        return jpa.updateUsernamePassword(username, password);
     }
 
     @Override

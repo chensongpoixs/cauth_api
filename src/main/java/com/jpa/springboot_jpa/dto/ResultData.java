@@ -1,4 +1,4 @@
-package com.jpa.springboot_jpa.utils;
+package com.jpa.springboot_jpa.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ResultData {
+
 
     private int status;
     private String msg;

@@ -1,77 +1,71 @@
 package com.jpa.springboot_jpa.controller;
 
+//import com.jpa.springboot_jpa.pojo.Customer;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.jpa.springboot_jpa.dto.AddCustomerInfo;
+import com.jpa.springboot_jpa.dto.SearchCustomerInfo;
+import com.jpa.springboot_jpa.dto.UpdateCustomerInfo;
 import com.jpa.springboot_jpa.pojo.Customer;
 import com.jpa.springboot_jpa.service.CustomerService;
-import com.jpa.springboot_jpa.utils.ResultData;
+import com.jpa.springboot_jpa.dto.ResultData;
+import com.jpa.springboot_jpa.service.impl.CustomerServiceImpl;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/customer")
+@RequestMapping(value = "/api/v1", produces =  MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
+@RestController
+//@RequestMapping(API_V1)
+@RequiredArgsConstructor
+@Validated
+//@RequestMapping(value = "/admin", produces = "application/json;charset=utf-8")
 public class CustomerController {
 
     @Autowired
-    private CustomerService customerService;
+    private CustomerServiceImpl customerService;
 
-    /**
-     * 获取所有客户列表
-     * @return
-     */
-    @ResponseBody
-    @GetMapping("/customers")
-    public ResultData findAllCustomers(){
-        ResultData result = new ResultData();
-        try {
-            List<Customer> customers =  customerService.findAll();
-            result.setData(customers);
-            result.setMsg("请求成功");
-            result.setStatus(200);
-        }catch (Exception ex){
-            result.setMsg("失败"+ex.getMessage());
-            result.setStatus(0);
-        }
-        return result;
-    }
 
-    /**
-     * 删除客户
-     * @param id
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/delete")
-    public ResultData deleteById(Integer id){
-        ResultData result = new ResultData();
+
+    @ApiOperation(value = "增加客户信息")
+    @RequestMapping(value = "/add_customer" , method = RequestMethod.POST)
+    // @RequestMapping(value =  "/v1/login/username={username}/password={password}" , method = RequestMethod.GET)
+    public ResultData addCustomer( @ApiParam(value = "X-token", required = true)
+                                       @RequestHeader(name = "X-token")
+                                       final String token ,
+                                   @ApiParam(value = " 增加客户信息", required = true)
+                                       @Valid
+                                   @RequestBody
+                                  final AddCustomerInfo addCustomerInfo
+    ){
+                            ResultData result = new ResultData();
         try{
-            customerService.deleteById(id);
-            result.setStatus(200);
-            result.setMsg("删除成功");
-        }catch (Exception e){
-            result.setStatus(0);
-            result.setMsg("删除失败"+e.getMessage());
-        }
-        return result;
-    }
-
-
-    /**
-     * 保存客户
-     * @param customer
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/save")
-    public ResultData save(Customer customer){
-        ResultData result = new ResultData();
-        try{
-            customerService.save(customer);
+            Customer customer = new Customer();
+            customer.setRegion(addCustomerInfo.getRegion());
+            customer.setCompany_name(addCustomerInfo.getCompany_name());
+            customer.setAttributable_sales(addCustomerInfo.getAttributable_sales());
+            customer.setInternal_code(addCustomerInfo.getInternal_code());
+            customer.setCreate_timestamp(System.currentTimeMillis()/1000);
+            customer.setUsed_system_code(0);
+             Customer customer1 =  customerService.save(customer);
             result.setStatus(200);
             result.setMsg("保存成功");
+            result.setData(customer1);
         }catch (Exception e){
             result.setStatus(0);
             result.setMsg("保存失败");
@@ -80,72 +74,156 @@ public class CustomerController {
     }
 
 
-    /**
-     * 更新客户
-     * @param customer
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/update")
-    public ResultData update(Customer customer){
+
+    //UpdateCustomerInfo
+    @ApiOperation(value = "修改客户信息")
+    @RequestMapping(value = "/update_customer" , method = RequestMethod.POST)
+    // @RequestMapping(value =  "/v1/login/username={username}/password={password}" , method = RequestMethod.GET)
+    public ResultData UpdateCustomer( @ApiParam(value = "X-token", required = true)
+                                   @RequestHeader(name = "X-token")
+                                   final String token ,
+                                   @ApiParam(value = "修改客户信息", required = true)
+                                   @Valid
+                                   @RequestBody
+                                   final UpdateCustomerInfo updateCustomerInfo
+    ){
         ResultData result = new ResultData();
         try{
-            customerService.updateById(customer);
+            Optional<Customer> customerdb = customerService.findById(updateCustomerInfo.getId());
+            if(customerdb.isPresent() == false)
+            {
+                result.setStatus(610);
+                result.setMsg("not find customer id ");
+                return result;
+            }
+            if (!updateCustomerInfo.getRegion().isEmpty())
+            {
+                customerdb.get().setRegion(updateCustomerInfo.getRegion());
+            }
+            if (!updateCustomerInfo.getCompany_name().isEmpty())
+            {
+                customerdb.get().setCompany_name(updateCustomerInfo.getCompany_name());
+            }
+            if (!updateCustomerInfo.getAttributable_sales().isEmpty())
+            {
+                customerdb.get().setAttributable_sales(updateCustomerInfo.getAttributable_sales());
+            }
+            if (!updateCustomerInfo.getInternal_code().isEmpty())
+            {
+                customerdb.get().setInternal_code(updateCustomerInfo.getInternal_code());
+            }
+            Customer customer1 =  customerService.save(customerdb.get());
             result.setStatus(200);
-            result.setMsg("更新成功");
+            result.setMsg("保存成功");
+            result.setData(customer1);
         }catch (Exception e){
             result.setStatus(0);
-            result.setMsg("更新失败");
+            result.setMsg("保存失败");
+        }
+        return result;
+    }
+
+    @ApiOperation(value = "删除客户信息")
+    @RequestMapping(value = "/delete_customer/id={id}" , method = RequestMethod.GET)
+    // @RequestMapping(value =  "/v1/login/username={username}/password={password}" , method = RequestMethod.GET)
+    public ResultData DeleteCustomer( @ApiParam(value = "X-token", required = true)
+                                      @RequestHeader(name = "X-token")
+                                      final String token ,
+                                      @ApiParam(value = "删除客户信息", required = true)
+                                      @PathVariable final int id
+    ){
+        ResultData result = new ResultData();
+        try{
+            Optional<Customer> customerdb = customerService.findById(id);
+            if(customerdb.isPresent() == false)
+            {
+                result.setStatus(610);
+                result.setMsg("not find customer id ");
+                return result;
+            }
+            customerService.deleteById(id);
+
+            result.setStatus(200);
+            result.setMsg("保存成功");
+            result.setData(customerdb);
+        }catch (Exception e){
+            result.setStatus(0);
+            result.setMsg("保存失败");
         }
         return result;
     }
 
 
-    /**
-     * 查询指定客户
-     * @param id
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/byId")
-    public ResultData byId(Integer id){
+    @ApiOperation(value = "查询客户信息")
+    @RequestMapping(value = "/search_customer" , method = RequestMethod.POST)
+    // @RequestMapping(value =  "/v1/login/username={username}/password={password}" , method = RequestMethod.GET)
+    public ResultData SearchCustomer( @ApiParam(value = "X-token", required = true)
+                                      @RequestHeader(name = "X-token")
+                                      final String token ,
+                                      @ApiParam(value = "修改客户信息", required = true)
+                                      @Valid
+                                      @RequestBody
+                                      final SearchCustomerInfo searchCustomerInfo
+    ){
         ResultData result = new ResultData();
         try{
-            Optional<Customer> customer= customerService.findById(id);
+//            Pageable pageable = PageRequest.of(searchCustomerInfo.getPage(), searchCustomerInfo.getPage_size(), Sort.unsorted());
+
+            if (searchCustomerInfo.getCompany_name().isEmpty())
+            {
+                List<Customer>  customerPage =   customerService.SearchAll(  searchCustomerInfo.getSort());
+
+                log.info(customerPage.toString());
+                Customerlist customerlist = new Customerlist(customerPage );
+                result.setData(customerlist);
+            }
+            else
+            {
+              List<Customer>  customerPage =   customerService.searchByname(searchCustomerInfo.getCompany_name(),0, 1000000, searchCustomerInfo.getSort());// searchCustomerInfo.getPage(), searchCustomerInfo.getPage_size(), searchCustomerInfo.getSort());
+                Customerlist customerlist = new Customerlist(customerPage/*, customerPage.size(),  searchCustomerInfo.getPage_size(), customerPage.size(), customerPage.size()*/);
+                log.info(Customerlist.builder().toString());
+                result.setData(customerlist);
+            }
+
             result.setStatus(200);
-            result.setMsg("请求成功");
-            result.setData(customer);
+            result.setMsg("保存成功");
+//            result.setData(customerdb);
         }catch (Exception e){
             result.setStatus(0);
-            result.setMsg("请求失败");
+            result.setMsg("保存失败");
         }
         return result;
     }
+    @Data
+    @ToString
+    @RequiredArgsConstructor
+    @Builder
+    private static final class Customerlist {
 
-    /**
-     * 根据特定条件分页检索
-     * @param cus
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/pageCus")
-    public ResultData pageCustomers(Customer cus,Integer pageNum,Integer pageSize){
-        ResultData result = new ResultData();
-        try{
-            Page page= customerService.pageCustomer(cus,pageNum,pageSize);
-            result.setStatus(200);
-            result.setMsg("请求成功");
-            result.setData(page);
-        }catch (Exception e){
-            result.setStatus(0);
-            result.setMsg("请求失败");
-        }
-        return result;
+        @JsonProperty("customer")
+        private final List<Customer> customers;
+
+
+
+        /*
+        "page_size": 10,
+  "page_number": 0,
+  "total_pages": 94,
+  "total_elements": 0,
+         */
+//        @JsonProperty("page_size")
+//        private  final int page_size ;
+//        @JsonProperty("page_number")
+//        private final int page_number;
+//        @JsonProperty("total_pages")
+//        private final int total_pages;
+//        @JsonProperty("total_elements")
+//        private final long total_elements;
+
+
+//        @JsonProperty("customer")
+//        private List<Customer> getCustomers () {return customers;}
+
     }
-
-
-
 
 }

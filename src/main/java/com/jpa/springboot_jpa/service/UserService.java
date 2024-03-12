@@ -15,39 +15,29 @@ public interface UserService {
     List<User> findAll();
 
 
-    /**
-     * 查询客户
-     * @param id
-     * @return
-     */
     Optional<User> findById(Integer id);
 
+    Optional<User> findByUsername(String username);
 
-    /**
-     * 删除客户
-     * @param id
-     */
-
+    int updateByUsernameToken(String username, String token);
+    int updateByUsernamePassword(String username, String password);
     void deleteById(Integer id);
 
 
     /**
      * 更新客户
-     * @param customer
+     * @param user
+     *
      */
     void updateById(User user);
 
 
-    /**
-     * 保存客户
-     * @param customer
-     */
     void save(User user);
 
 
     /**
      * 有条件的分页查询
-     * @param customer
+     * @param user
      * @param pageNumber
      * @param pageSize
      * @return

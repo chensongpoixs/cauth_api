@@ -5,9 +5,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/global_test?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/global_test2?&useUnicode=true&characterEncoding=utf-8&autoReconnect=true
     username: root
-    password:
+    password: 20211013
 
   jpa:
     database: mysql #指定你使用数据库

@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "t_admin")
 @Data
@@ -21,8 +18,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Basic
+    @Column(name = "username", nullable = false, length = 1024)
     private String username;
+    @Basic
+    @Column(name = "password", nullable = false, length = 1024)
     private String password;
+    @Basic
+    @Column(name = "token", nullable = false, length = 1024)
     private String token;
 
 }

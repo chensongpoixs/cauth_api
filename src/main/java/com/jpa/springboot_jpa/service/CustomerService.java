@@ -42,7 +42,7 @@ public interface CustomerService {
      * 保存客户
      * @param customer
      */
-    void save(Customer customer);
+    Customer save(Customer customer);
 
 
     /**
