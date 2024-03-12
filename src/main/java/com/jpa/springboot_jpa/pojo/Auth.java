@@ -48,7 +48,7 @@ public class Auth
     @Basic
     @Column(name = "app_type", nullable = true, length = 1024)
     // 内部代号
-    private String appType;
+    private String app_type;
     @Basic
     @Column(name = "contacts", nullable = true, length = 1024)
     // 归属销售
@@ -62,33 +62,33 @@ public class Auth
 
     @Basic
     @Column(name = "sdk_interface_manager", nullable = true, length = 1024 )
-    private String sdkInterfaceManager;
+    private String sdk_interface_manager;
     @Basic
     @Column(name = "containers_num", nullable = true )
-    private Integer containersNum;
+    private Integer containers_num;
     @Basic
     @Column(name = "video_fusion_num", nullable = true )
-    private Integer video_fusionNum;
+    private Integer video_fusion_num;
     @Basic
     @Column(name = "system_code", nullable = true, length = 1024 )
-    private String systemCode;
+    private String system_code;
 
     @Basic
     @Column(name = "register_timestamp", nullable = true )
-    private long registerTimestamp;
+    private long register_timestamp;
     @Basic
     @Column(name = "expire_timestamp", nullable = true )
-    private long expireTimestamp;
+    private long expire_timestamp;
     @Basic
     @Column(name = "cycle", nullable = true )
     private long cycle;
     @Basic
     @Column(name = "auth_timestamp", nullable = true  )
-    private long authTimestamp;
+    private long auth_timestamp;
     @Basic
     @Column(name = "remarks", nullable = true , length = 1024 )
     private String remarks;
     @Basic
     @Column(name = "client_device", nullable = true , length = 1024 )
-    private String clientDevice;
+    private String client_device;
 }
