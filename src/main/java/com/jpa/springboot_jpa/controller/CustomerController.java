@@ -6,9 +6,11 @@ import com.jpa.springboot_jpa.dto.AddCustomerInfo;
 import com.jpa.springboot_jpa.dto.SearchCustomerInfo;
 import com.jpa.springboot_jpa.dto.UpdateCustomerInfo;
 import com.jpa.springboot_jpa.pojo.Customer;
+import com.jpa.springboot_jpa.pojo.User;
 import com.jpa.springboot_jpa.service.CustomerService;
 import com.jpa.springboot_jpa.dto.ResultData;
 import com.jpa.springboot_jpa.service.impl.CustomerServiceImpl;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.*;
@@ -122,7 +124,30 @@ public class CustomerController {
         }
         return result;
     }
+//    @ResponseBody
+//    @GetMapping("/byIffd")
+//    public ResultData byIsdfdsfdsd(User user){
+//        ResultData result = new ResultData();
+//        try{
+////            Optional<Customer> customer= customerService.findById(id);
+//            result.setStatus(200);
+//            result.setMsg("请求成功");
+////            result.setData(customer);
+//        }catch (Exception e){
+//            result.setStatus(0);
+//            result.setMsg("请求失败");
+//        }
+//        return result;
+//    }
 
+
+//    @GetMapping("/page")
+////    @Operation(summary = "获得报警设置分页")
+////    @PreAuthorize("@ss.hasPermission('syz:alarm-setting:query')")
+//    public User getAlarmSettingPage(@Valid User pageVO) {
+////        User pageResult = alarmSettingService.getAlarmSettingPage(pageVO);
+//        return pageVO;
+//    }
     @ApiOperation(value = "删除客户信息")
     @RequestMapping(value = "/delete_customer/id={id}" , method = RequestMethod.GET)
     // @RequestMapping(value =  "/v1/login/username={username}/password={password}" , method = RequestMethod.GET)

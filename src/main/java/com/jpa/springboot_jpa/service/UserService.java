@@ -18,6 +18,7 @@ public interface UserService {
     Optional<User> findById(Integer id);
 
     Optional<User> findByUsername(String username);
+    Optional<User> findByToken(String token);
 
     int updateByUsernameToken(String username, String token);
     int updateByUsernamePassword(String username, String password);

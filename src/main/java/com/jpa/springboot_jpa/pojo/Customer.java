@@ -19,30 +19,30 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Integer id;
     @Basic
-    @Column(name = "company_name", nullable = false, length = 1024)
+    @Column(name = "company_name", nullable = true, length = 1024)
     // 公司名称      如果某公司有正在使用的授权记录，则禁止删除
     private String company_name;
     @Basic
-    @Column(name = "region", nullable = false, length = 1024)
+    @Column(name = "region", nullable = true, length = 1024)
     // 所在区域
     private String region;
     @Basic
-    @Column(name = "internal_code", nullable = false, length = 1024)
+    @Column(name = "internal_code", nullable = true, length = 1024)
     // 内部代号
     private String internal_code;
     @Basic
-    @Column(name = "attributable_sales", nullable = false, length = 1024)
+    @Column(name = "attributable_sales", nullable = true, length = 1024)
     // 归属销售
     private String attributable_sales;
 
     @Basic
-    @Column(name = "create_timestamp", nullable = false )
+    @Column(name = "create_timestamp", nullable = true )
     // 创建时间戳
     private long create_timestamp;
 
 
     @Basic
-    @Column(name = "used_system_code", nullable = false )
+    @Column(name = "used_system_code", nullable = true )
     // 是否有使用的
     private long used_system_code;
 

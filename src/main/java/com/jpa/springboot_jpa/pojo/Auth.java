@@ -38,54 +38,57 @@ public class Auth
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Integer id;
     @Basic
-    @Column(name = "name", nullable = false, length = 1024)
+    @Column(name = "name", nullable = true, length = 1024)
     // 公司名称      如果某公司有正在使用的授权记录，则禁止删除
     private String name;
     @Basic
-    @Column(name = "province", nullable = false, length = 1024)
+    @Column(name = "province", nullable = true, length = 1024)
     // 所在区域
     private String province;
     @Basic
-    @Column(name = "app_type", nullable = false, length = 1024)
+    @Column(name = "app_type", nullable = true, length = 1024)
     // 内部代号
     private String appType;
     @Basic
-    @Column(name = "contacts", nullable = false, length = 1024)
+    @Column(name = "contacts", nullable = true, length = 1024)
     // 归属销售
     private String contacts;
 
     @Basic
-    @Column(name = "telephone", nullable = false , length = 1024)
+    @Column(name = "telephone", nullable = true , length = 1024)
     // 创建时间戳
     private String telephone;
 
 
     @Basic
-    @Column(name = "sdk_interface_manager", nullable = false, length = 1024 )
+    @Column(name = "sdk_interface_manager", nullable = true, length = 1024 )
     private String sdkInterfaceManager;
     @Basic
-    @Column(name = "containers_num", nullable = false )
+    @Column(name = "containers_num", nullable = true )
     private Integer containersNum;
     @Basic
-    @Column(name = "video_fusion_num", nullable = false )
+    @Column(name = "video_fusion_num", nullable = true )
     private Integer video_fusionNum;
     @Basic
-    @Column(name = "system_code", nullable = false, length = 1024 )
+    @Column(name = "system_code", nullable = true, length = 1024 )
     private String systemCode;
 
     @Basic
-    @Column(name = "register_timestamp", nullable = false )
+    @Column(name = "register_timestamp", nullable = true )
     private long registerTimestamp;
     @Basic
-    @Column(name = "expire_timestamp", nullable = false )
+    @Column(name = "expire_timestamp", nullable = true )
     private long expireTimestamp;
     @Basic
-    @Column(name = "cycle", nullable = false )
+    @Column(name = "cycle", nullable = true )
     private long cycle;
     @Basic
-    @Column(name = "auth_timestamp", nullable = false  )
+    @Column(name = "auth_timestamp", nullable = true  )
     private long authTimestamp;
     @Basic
-    @Column(name = "remarks", nullable = false , length = 1024 )
+    @Column(name = "remarks", nullable = true , length = 1024 )
     private String remarks;
+    @Basic
+    @Column(name = "client_device", nullable = true , length = 1024 )
+    private String clientDevice;
 }

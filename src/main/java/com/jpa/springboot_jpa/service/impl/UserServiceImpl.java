@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findByToken(String token) {
+        return jpa.findByToken(token);
+    }
+
+    @Override
     /*
     1：方法的返回值应该是int，表示更新语句所影响的行数
 2：在调用的地方必须加事务，没有事务不能正常执行

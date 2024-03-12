@@ -21,11 +21,14 @@ package com.jpa.springboot_jpa.filter;
 
 //import cn.edu.sgu.www.knife4j.dto.ExceptionResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jpa.springboot_jpa.dto.ResultData;
+import com.jpa.springboot_jpa.pojo.User;
 import com.jpa.springboot_jpa.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -39,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 //import static cn.edu.sgu.www.knife4j.system.Constants.X_TOKEN_HEADER;
@@ -60,6 +64,7 @@ public class SecurityValidationFilter implements Filter {
 
     @Autowired
     private final UserServiceImpl userServiceimpl;
+
 
 
 //    private final ResponseExceptionHandler handler;
@@ -115,7 +120,8 @@ public class SecurityValidationFilter implements Filter {
             return;
         }
         String requestURI = httpRequest.getRequestURI();
-        if (!requestURI.matches("^/(api/v1/netauth).*$"))
+        log.info("-->dsfdsurl = " + requestURI);
+        if (requestURI.matches("^/(api/v1).*$"))
         {
             val headersMap =
                     list(httpRequest.getHeaderNames()).stream()
@@ -125,7 +131,30 @@ public class SecurityValidationFilter implements Filter {
                             ));
 
             log.info("-->url = " + requestURI);
-//            var apiKey = headersMap.getOrDefault(X_TOKEN_HEADER, emptyList());
+            var token = headersMap.getOrDefault("x-token", emptyList());
+            if (!token.isEmpty())
+            {
+                Optional<User> user = userServiceimpl.findByToken(token.get(0));
+                if (user.isPresent() == false)
+                {
+                    log.info(" x-token failed !!! " + token);
+                    ResponseEntity<ResultData>  responseEntity = new ResponseEntity<>(new ResultData(620, "k"), HttpStatus.BAD_REQUEST);
+                    responseEntity.getBody().setMsg("   x-token expire failed !!! ");
+                    responseEntity.getBody().setStatus(620);
+                    buildException(httpResponse, responseEntity);
+
+                    return ;
+                }
+            }
+            else
+            {
+                                log.info("not  find x-token failed !!!");
+                ResponseEntity<ResultData>  responseEntity =  new ResponseEntity<>(new ResultData(620, "k"), HttpStatus.BAD_REQUEST);
+                responseEntity.getBody().setMsg("not find x-token failed !!! ");
+                buildException(httpResponse, responseEntity);
+
+                return;
+            }
 //            if (!apiKey.isEmpty())
 //            {
 //                val key = apiKey.get(0);

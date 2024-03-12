@@ -19,13 +19,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Basic
-    @Column(name = "username", nullable = false, length = 1024)
+    @Column(name = "username", nullable = true, length = 1024)
     private String username;
     @Basic
-    @Column(name = "password", nullable = false, length = 1024)
+    @Column(name = "password", nullable = true, length = 1024)
     private String password;
     @Basic
-    @Column(name = "token", nullable = false, length = 1024)
+    @Column(name = "token", nullable = true, length = 1024)
     private String token;
 
 }
