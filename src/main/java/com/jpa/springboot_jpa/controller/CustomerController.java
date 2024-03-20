@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jpa.springboot_jpa.dto.AddCustomerInfo;
 import com.jpa.springboot_jpa.dto.SearchCustomerInfo;
 import com.jpa.springboot_jpa.dto.UpdateCustomerInfo;
+import com.jpa.springboot_jpa.pojo.Auth;
 import com.jpa.springboot_jpa.pojo.Customer;
 import com.jpa.springboot_jpa.pojo.User;
 import com.jpa.springboot_jpa.service.CustomerService;
 import com.jpa.springboot_jpa.dto.ResultData;
+import com.jpa.springboot_jpa.service.impl.AuthServiceImpl;
 import com.jpa.springboot_jpa.service.impl.CustomerServiceImpl;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +28,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +45,38 @@ public class CustomerController {
     @Autowired
     private CustomerServiceImpl customerService;
 
-
+    @Autowired
+    private AuthServiceImpl authService;
+//    @ApiOperation(value = "客户信息")
+//    @RequestMapping(value = "/search_customer_company" , method = RequestMethod.POST)
+//    // @RequestMapping(value =  "/v1/login/username={username}/password={password}" , method = RequestMethod.GET)
+//    public ResultData SearchCustomerCompany( @ApiParam(value = "X-token", required = true)
+//                                   @RequestHeader(name = "X-token")
+//                                   final String token ,
+//                                   @ApiParam(value = " 增加客户信息", required = true)
+//                                   @Valid
+//                                   @RequestBody
+//                                   final String company_name
+//    ){
+//        ResultData result = new ResultData();
+//        try{
+//            Customer customer = new Customer();
+//            customer.setRegion(addCustomerInfo.getRegion());
+//            customer.setCompany_name(addCustomerInfo.getCompany_name());
+//            customer.setAttributable_sales(addCustomerInfo.getAttributable_sales());
+//            customer.setInternal_code(addCustomerInfo.getInternal_code());
+//            customer.setCreate_timestamp(System.currentTimeMillis()/1000);
+//            customer.setUsed_system_code(0);
+//            Customer customer1 =  customerService.save(customer);
+//            result.setStatus(200);
+//            result.setMsg("保存成功");
+//            result.setData(customer1);
+//        }catch (Exception e){
+//            result.setStatus(0);
+//            result.setMsg("保存失败");
+//        }
+//        return result;
+//    }
 
     @ApiOperation(value = "增加客户信息")
     @RequestMapping(value = "/add_customer" , method = RequestMethod.POST)
@@ -61,9 +95,20 @@ public class CustomerController {
             customer.setRegion(addCustomerInfo.getRegion());
             customer.setCompany_name(addCustomerInfo.getCompany_name());
             customer.setAttributable_sales(addCustomerInfo.getAttributable_sales());
+            customer.setList_regions(addCustomerInfo.getList_regions());
             customer.setInternal_code(addCustomerInfo.getInternal_code());
             customer.setCreate_timestamp(System.currentTimeMillis()/1000);
             customer.setUsed_system_code(0);
+            List<Auth> auths = authService.findByName(addCustomerInfo.getCompany_name());
+            long timestamps = 0;
+            for (Auth auth: auths)
+            {
+                if (timestamps < auth.getExpire_timestamp())
+                {
+                    timestamps = auth.getExpire_timestamp();
+                }
+            }
+            customer.setUsed_system_code( timestamps);
              Customer customer1 =  customerService.save(customer);
             result.setStatus(200);
             result.setMsg("保存成功");
@@ -114,6 +159,20 @@ public class CustomerController {
             {
                 customerdb.get().setInternal_code(updateCustomerInfo.getInternal_code());
             }
+            if (!updateCustomerInfo.getList_regions().isEmpty())
+            {
+                customerdb.get().setList_regions(updateCustomerInfo.getList_regions());
+            }
+            List<Auth> auths = authService.findByName(updateCustomerInfo.getCompany_name());
+            long timestamps = 0;
+            for (Auth auth: auths)
+            {
+                if (timestamps < auth.getExpire_timestamp())
+                {
+                    timestamps = auth.getExpire_timestamp();
+                }
+            }
+            customerdb.get().setUsed_system_code( timestamps);
             Customer customer1 =  customerService.save(customerdb.get());
             result.setStatus(200);
             result.setMsg("保存成功");
@@ -166,11 +225,22 @@ public class CustomerController {
                 result.setMsg("not find customer id ");
                 return result;
             }
-            customerService.deleteById(id);
+            if (customerdb.get().getUsed_system_code() > (System.currentTimeMillis()/1000))
+            {
+                result.setStatus(611);
+                result.setMsg("   delete  filed !! use name !!!! ");
+                return result;
+            }
+            Customer customer = new Customer();
+            customer = customerdb.get();
+            customer.setList_regions(null);
 
             result.setStatus(200);
             result.setMsg("保存成功");
-            result.setData(customerdb);
+            result.setData(customer);
+            customerService.deleteById(id);
+
+
         }catch (Exception e){
             result.setStatus(0);
             result.setMsg("保存失败");
@@ -196,16 +266,50 @@ public class CustomerController {
 
             if (searchCustomerInfo.getCompany_name().isEmpty())
             {
+//                Page<Customer>  customerPage =   customerService.SearchAll(pageable,  searchCustomerInfo.getSort());
                 List<Customer>  customerPage =   customerService.SearchAll(  searchCustomerInfo.getSort());
-
+                int  total_pages = (customerPage.size() ) / searchCustomerInfo.getPage_size() + ((customerPage.size() % searchCustomerInfo.getPage_size() == 0? 0: 1));;
+                int  total_elements = customerPage.size();
+                int start_index = (searchCustomerInfo.getPage() ) * searchCustomerInfo.getPage_size();
+                List<Customer> new_customers = new ArrayList<>();
+                int count = 0;
+                for (Customer customer :customerPage)
+                {
+                    ++count;
+                    if (count > start_index)
+                    {
+                        new_customers.add(customer);
+                    }
+                    if (new_customers.size()>= searchCustomerInfo.getPage_size())
+                    {
+                        break;
+                    }
+                }
                 log.info(customerPage.toString());
-                Customerlist customerlist = new Customerlist(customerPage );
+                Customerlist customerlist = new Customerlist( new_customers, searchCustomerInfo.getPage(), searchCustomerInfo.getPage_size(), total_pages, total_elements);
                 result.setData(customerlist);
             }
             else
             {
               List<Customer>  customerPage =   customerService.searchByname(searchCustomerInfo.getCompany_name(),0, 1000000, searchCustomerInfo.getSort());// searchCustomerInfo.getPage(), searchCustomerInfo.getPage_size(), searchCustomerInfo.getSort());
-                Customerlist customerlist = new Customerlist(customerPage/*, customerPage.size(),  searchCustomerInfo.getPage_size(), customerPage.size(), customerPage.size()*/);
+                int  total_pages = (customerPage.size() ) / searchCustomerInfo.getPage_size()+ ((customerPage.size() % searchCustomerInfo.getPage_size() == 0? 0: 1));;;
+                int  total_elements = customerPage.size();
+                int start_index = (searchCustomerInfo.getPage() + 1) * searchCustomerInfo.getPage_size();
+                List<Customer> new_customers = new ArrayList<>();
+                int count = 0;
+                for (Customer customer :customerPage)
+                {
+                    ++count;
+                    if (count > start_index)
+                    {
+                        new_customers.add(customer);
+                    }
+                    if (new_customers.size()>= searchCustomerInfo.getPage_size())
+                    {
+                        break;
+                    }
+                }
+                Customerlist customerlist = new Customerlist( new_customers, searchCustomerInfo.getPage(), searchCustomerInfo.getPage_size(), total_pages, total_elements);
                 log.info(Customerlist.builder().toString());
                 result.setData(customerlist);
             }
@@ -236,14 +340,14 @@ public class CustomerController {
   "total_pages": 94,
   "total_elements": 0,
          */
-//        @JsonProperty("page_size")
-//        private  final int page_size ;
-//        @JsonProperty("page_number")
-//        private final int page_number;
-//        @JsonProperty("total_pages")
-//        private final int total_pages;
-//        @JsonProperty("total_elements")
-//        private final long total_elements;
+        @JsonProperty("page_size")
+        private  final int page_size ;
+        @JsonProperty("page_number")
+        private final int page_number;
+        @JsonProperty("total_pages")
+        private final int total_pages;
+        @JsonProperty("total_elements")
+        private final long total_elements;
 
 
 //        @JsonProperty("customer")

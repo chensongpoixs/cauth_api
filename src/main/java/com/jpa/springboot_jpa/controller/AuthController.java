@@ -1,6 +1,7 @@
 package com.jpa.springboot_jpa.controller;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jpa.springboot_jpa.dto.*;
 import com.jpa.springboot_jpa.pojo.Auth;
 import com.jpa.springboot_jpa.pojo.Customer;
@@ -8,7 +9,10 @@ import com.jpa.springboot_jpa.service.impl.AuthServiceImpl;
 import com.jpa.springboot_jpa.service.impl.CustomerServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.Builder;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,6 +41,9 @@ public class AuthController
 
     @Autowired
     private   AuthServiceImpl authServiceimpl;
+
+
+
 
 
 
@@ -68,6 +76,7 @@ public class AuthController
             auth.setRemarks(addAuthInfo.getRemarks());
             auth.setExpire_timestamp(addAuthInfo.getExpire_timestamp());
             auth.setCycle(addAuthInfo.getCycle());
+
             ;
 //            Customer customer = new Customer();
 //            customer.setRegion(addCustomerInfo.getRegion());
@@ -79,7 +88,18 @@ public class AuthController
 //            Customer customer1 =  customerService.save(customer);
             result.setStatus(200);
             result.setMsg("保存成功");
+
             result.setData(authServiceimpl.save(auth));
+            List<Auth> auths = authServiceimpl.findByName(addAuthInfo.getName());
+            long timestamps = 0;
+            for (Auth auth_: auths)
+            {
+                if (timestamps < auth_.getExpire_timestamp())
+                {
+                    timestamps = auth_.getExpire_timestamp();
+                }
+            }
+            customerService.updateAuthTimestamp(addAuthInfo.getName(), timestamps);
         }catch (Exception e){
             result.setStatus(0);
             result.setMsg("保存失败");
@@ -109,9 +129,11 @@ public class AuthController
                 result.setMsg("not find auth id ");
                 return result;
             }
+            customerService.updateAuthTimestamp(authdb.get().getName(), 0);
 //            authdb.get().setId();
             authdb.get().setCycle(updateAuthInfo.getCycle());
             authdb.get().setName(updateAuthInfo.getName());
+
             authdb.get().setProvince(updateAuthInfo.getProvince());
             authdb.get().setApp_type(updateAuthInfo.getApp_type());
             authdb.get().setContacts(updateAuthInfo.getContacts());
@@ -121,11 +143,22 @@ public class AuthController
             authdb.get().setVideo_fusion_num(updateAuthInfo.getVideo_fusion_num());
             authdb.get().setRemarks(updateAuthInfo.getRemarks());
             authdb.get().setExpire_timestamp(updateAuthInfo.getExpire_timestamp());
+//            customerService.updateAuthTimestamp(authdb.get().getName(), authdb.get().getExpire_timestamp());
             authdb.get().setCycle(updateAuthInfo.getCycle());
 //            Customer customer1 =  customerService.save(customerdb.get());
             result.setStatus(200);
             result.setMsg("保存成功");
             result.setData(authServiceimpl.save(authdb.get()));
+            List<Auth> auths = authServiceimpl.findByName(authdb.get().getName());
+            long timestamps = 0;
+            for (Auth auth: auths)
+            {
+                if (timestamps < auth.getExpire_timestamp())
+                {
+                    timestamps = auth.getExpire_timestamp();
+                }
+            }
+            customerService.updateAuthTimestamp(authdb.get().getName(), timestamps);
         }catch (Exception e){
             result.setStatus(0);
             result.setMsg("保存失败");
@@ -177,31 +210,28 @@ public class AuthController
     ){
         ResultData result = new ResultData();
         try{
-//            Pageable pageable = PageRequest.of(searchCustomerInfo.getPage(), searchCustomerInfo.getPage_size(), Sort.unsorted());
 
-//            if (!searchAuthInfo.getName ().isEmpty())
-//            {
-//                List<Customer> customerPage =   customerService.SearchAll(  searchCustomerInfo.getSort());
-//
-//                log.info(customerPage.toString());
-//                CustomerController.Customerlist customerlist = new CustomerController.Customerlist(customerPage );
-//                result.setData(customerlist);
-//            }
-//            else if (! searchAuthInfo.getSystem_code().isEmpty())
-//            {
-//
-//            }
-//            else
-//            {
-//                List<Customer>  customerPage =   customerService.searchByname(searchCustomerInfo.getCompany_name(),0, 1000000, searchCustomerInfo.getSort());// searchCustomerInfo.getPage(), searchCustomerInfo.getPage_size(), searchCustomerInfo.getSort());
-//                CustomerController.Customerlist customerlist = new CustomerController.Customerlist(customerPage/*, customerPage.size(),  searchCustomerInfo.getPage_size(), customerPage.size(), customerPage.size()*/);
-//                log.info(CustomerController.Customerlist.builder().toString());
-//                result.setData(customerlist);
-//            }
-
-            List<Auth> auths=  authServiceimpl.findAll(searchAuthInfo.getName(), searchAuthInfo.getSystem_code(), searchAuthInfo.getSort());
-
-            result.setData(auths);
+            List<Auth> auths=  authServiceimpl.findAll(searchAuthInfo.getName(), searchAuthInfo.getAuth_expire(), searchAuthInfo.getSystem_code(), searchAuthInfo.getSort());
+            int  total_pages = (auths.size() ) / searchAuthInfo.getPage_size() + ((auths.size() % searchAuthInfo.getPage_size() == 0?0: 1));
+            int  total_elements = auths.size();
+            int start_index = (searchAuthInfo.getPage() ) * searchAuthInfo.getPage_size();
+            List<Auth> new_auths = new ArrayList<>();
+            int count = 0;
+            for (Auth auth :auths)
+            {
+                ++count;
+                if (count > start_index)
+                {
+                    new_auths.add(auth);
+                }
+                if (new_auths.size()>= searchAuthInfo.getPage_size())
+                {
+                    break;
+                }
+            }
+            log.info(new_auths.toString());
+            Authlist authlist = new Authlist( new_auths, searchAuthInfo.getPage(), searchAuthInfo.getPage_size(), total_pages, total_elements);
+            result.setData(authlist);
             result.setStatus(200);
             result.setMsg("保存成功");
 //            result.setData(customerdb);
@@ -210,6 +240,37 @@ public class AuthController
             result.setMsg("保存失败");
         }
         return result;
+    }
+    @Data
+    @ToString
+    @RequiredArgsConstructor
+    @Builder
+    private static final class Authlist {
+
+        @JsonProperty("auths")
+        private final List<Auth> auths;
+
+
+
+        /*
+        "page_size": 10,
+  "page_number": 0,
+  "total_pages": 94,
+  "total_elements": 0,
+         */
+        @JsonProperty("page_size")
+        private  final int page_size ;
+        @JsonProperty("page_number")
+        private final int page_number;
+        @JsonProperty("total_pages")
+        private final int total_pages;
+        @JsonProperty("total_elements")
+        private final long total_elements;
+
+
+//        @JsonProperty("customer")
+//        private List<Customer> getCustomers () {return customers;}
+
     }
 
 

@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Table;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "t_customer")
 @Data
@@ -46,4 +47,13 @@ public class Customer {
     // 是否有使用的
     private long used_system_code;
 
+
+
+    @Basic
+    @Column(name = "list_regions", nullable = true )
+//    // 是否有使用的
+//    private List<String> list_regions;
+//    @Column(name="arguments")
+    @ElementCollection(targetClass=Integer.class)
+    private List<Integer> list_regions;
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @Builder
@@ -33,4 +34,7 @@ public class UpdateCustomerInfo
     @NotEmpty(message = "归属销售")
     @Size(min = 1, max = 255, message = "归属销售")
     private String attributable_sales;
+    @NotEmpty(message = "区域")
+    @Size(min = 1, max = 10, message = "区域")
+    private List<Integer> list_regions;
 }

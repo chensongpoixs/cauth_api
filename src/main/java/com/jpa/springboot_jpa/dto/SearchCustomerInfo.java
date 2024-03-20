@@ -22,10 +22,10 @@ public class SearchCustomerInfo
     @NotEmpty(message = "照创建时间正序或倒序排列")
     @Size(min = 0, max = 1, message = "照创建时间正序或倒序排列")
     private Integer sort;
-//    @NotEmpty(message = "page")
-//    @Size(min = 1, max = 1023333333, message = "page")
-//    private Integer page;
-//    @NotEmpty(message = "page_size")
-//    @Size(min = 1, max = 1023333333, message = "page_size")
-//    private Integer page_size;
+    @NotEmpty(message = "page")
+    @Size(min = 1, max = 1023333333, message = "page")
+    private Integer page;
+    @NotEmpty(message = "page_size")
+    @Size(min = 1, max = 1023333333, message = "page_size")
+    private Integer page_size;
 }

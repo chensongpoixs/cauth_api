@@ -14,15 +14,15 @@ public interface AuthRepository extends JpaRepository<Auth,Integer>
 
 
 
-    @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u   where u.name  LIKE CONCAT('%',?1,'%')    order by u.register_timestamp asc limit ?2,?3 ",nativeQuery = true)
+    @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u   where u.name  LIKE CONCAT(?1,'%')   order by u.register_timestamp asc limit ?2,?3 ",nativeQuery = true)
     public List<Auth> findByNameAsc(String name, Integer pageNumber, Integer pageSize);
-    @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u    where u.name  LIKE CONCAT('%',?1,'%')   order by u.register_timestamp desc limit ?2,?3 ",nativeQuery = true)
+    @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u    where u.name  LIKE CONCAT(?1,'%')  order by u.register_timestamp desc limit ?2,?3 ",nativeQuery = true)
     public List<Auth> findByNameDesc(String name, Integer pageNumber,Integer pageSize);
 
 
-    @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u   where u.system_code  LIKE CONCAT('%',?1,'%')    order by u.register_timestamp asc limit ?2,?3 ",nativeQuery = true)
+    @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u   where u.system_code  LIKE CONCAT(?1,'%')    order by u.register_timestamp asc limit ?2,?3 ",nativeQuery = true)
     public List<Auth> findSystemCodeByAsc(String System_code, Integer pageNumber, Integer pageSize);
-    @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u   where u.system_code  LIKE CONCAT('%',?1,'%')    order by u.register_timestamp desc limit ?2,?3 ",nativeQuery = true)
+    @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u   where u.system_code  LIKE CONCAT(?1,'%')    order by u.register_timestamp desc limit ?2,?3 ",nativeQuery = true)
     public List<Auth> findSystemCodeByDesc(String System_code, Integer pageNumber,Integer pageSize);
 
 
@@ -30,4 +30,8 @@ public interface AuthRepository extends JpaRepository<Auth,Integer>
     public List<Auth> findByAsc(Integer pageNumber, Integer pageSize);
     @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u      order by u.register_timestamp desc limit ?1,?2 ",nativeQuery = true)
     public List<Auth> findByDesc( Integer pageNumber,Integer pageSize);
+
+
+    @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u    where u.name =?1 ",nativeQuery = true)
+    public List<Auth> findByName( String name);
 }

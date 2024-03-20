@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,11 @@ public class CustomerServiceImpl implements CustomerService {
         return jpa.findByCompanyNameAsc(name, page, page_size);
     }
 
+    @Transactional
+    public int updateAuthTimestamp(String commpany_name, long timestamp)
+    {
+        return jpa.UpdateSystemCodeTime(timestamp, commpany_name);
+    }
     public List<Customer>  SearchAll(  int sort )
     {
         if (sort> 0)
@@ -51,6 +57,14 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return jpa.findByAsc(  0, 1000000);
     }
+//    public Page<Customer>  SearchAll(  Pageable pageable , int sort)
+//    {
+//        if (sort> 0)
+//        {
+//            return jpa.findByDesc( pageable);
+//        }
+//        return jpa.findByAsc(  pageable);
+//    }
 
     @Override
     public void updateById(Customer customer) {

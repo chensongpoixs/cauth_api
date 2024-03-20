@@ -26,4 +26,15 @@ public class SearchAuthInfo
     @NotEmpty(message = "照创建时间正序或倒序排列")
     @Size(min = 0, max = 1, message = "照创建时间正序或倒序排列")
     private Integer sort;
+
+    @NotEmpty(message = "授权是否过期")
+    @Size(min = 0, max = 2, message = "授权是否过期")
+    private Integer auth_expire;
+
+    @NotEmpty(message = "page")
+    @Size(min = 1, max = 1023333333, message = "page")
+    private Integer page;
+    @NotEmpty(message = "page_size")
+    @Size(min = 1, max = 1023333333, message = "page_size")
+    private Integer page_size;
 }
