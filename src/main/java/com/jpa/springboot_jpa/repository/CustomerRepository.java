@@ -20,9 +20,9 @@ public interface CustomerRepository extends JpaRepository<Customer,Integer> {
 //    @Modifying
 //    @Query(value="update UserModel o set o.name=:newName where o.name like %:nn")
 //    public int findByUuidOrAge(@Param("nn") String name,@Param("newName") String newName);
-    @Query(value ="select id, attributable_sales, company_name, create_timestamp, internal_code, region, used_system_code from t_customer  where company_name   LIKE CONCAT(?1,'%')  order by create_timestamp asc  limit ?2,?3",nativeQuery = true)
+    @Query(value ="select id, attributable_sales, company_name, create_timestamp, internal_code, region, used_system_code from t_customer  where company_name   LIKE %?1%  order by create_timestamp asc  limit ?2,?3",nativeQuery = true)
     public List<Customer> findByCompanyNameAsc(String name, Integer pageNumber, Integer pageSize);
-    @Query(value ="select id, attributable_sales, company_name, create_timestamp, internal_code, region, used_system_code from t_customer where company_name LIKE CONCAT(?1,'%')  order by create_timestamp desc  limit ?2,?3",nativeQuery = true)
+    @Query(value ="select id, attributable_sales, company_name, create_timestamp, internal_code, region, used_system_code from t_customer where company_name LIKE  %?1% order by create_timestamp desc  limit ?2,?3",nativeQuery = true)
     public List<Customer> findByCompanyNameDesc(String name, Integer pageNumber,Integer pageSize);
 
 

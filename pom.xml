@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.jpa</groupId>
-    <artifactId>springboot_jpa</artifactId>
+    <artifactId>web_auth</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>auth_web</name>
     <description>auth_api</description>

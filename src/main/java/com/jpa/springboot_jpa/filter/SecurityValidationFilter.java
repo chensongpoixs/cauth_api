@@ -87,41 +87,41 @@ public class SecurityValidationFilter implements Filter {
         val httpResponse = (HttpServletResponse) servletResponse;
 //        httpRequest.g
 
-//        ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Headers", "X-Custom-Header");
-//        ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Credentials", "true");
-////        Access-Control-Allow-Headers: X-Custom-Header
-////        Access-Control-Allow-Credentials: true
+        ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Headers", "X-Custom-Header");
+        ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Credentials", "true");
+//        Access-Control-Allow-Headers: X-Custom-Header
+//        Access-Control-Allow-Credentials: true
 //        log.info("==============================================doFilter==============================================" + httpRequest.getMethod().toLowerCase());
-//        String header_Origin = "*";
-//        if (httpRequest.getHeader("Origin") != null)
-//        {
-//            if (httpRequest.getHeader("Origin").charAt( httpRequest.getHeader("Origin").length()-1) != '/')
-//            {
+        String header_Origin = "*";
+        if (httpRequest.getHeader("Origin") != null)
+        {
+            if (httpRequest.getHeader("Origin").charAt( httpRequest.getHeader("Origin").length()-1) != '/')
+            {
+                header_Origin = httpRequest.getHeader("Origin");
+            }
+            else
+            {
 //                header_Origin = httpRequest.getHeader("Origin");
-//            }
-//            else
-//            {
-////                header_Origin = httpRequest.getHeader("Origin");
-//                header_Origin = httpRequest.getHeader("Origin").substring(0, httpRequest.getHeader("Origin").length()-1);
-//            }
-//        }
-////        log.info("header_Origin  = " + header_Origin + ",  httpRequest.getHeader(\"Origin\") = " +  httpRequest.getHeader("Origin"));
-//        httpResponse.setHeader("Access-Control-Allow-Origin", header_Origin);
-////        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-//        if (httpRequest.getMethod().toLowerCase().equals( "options"))
-//        {
-//            httpResponse.setStatus(204);
-//            httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-//            httpResponse.setHeader("Access-Control-Request-Headers", "Content-Type");
-////            httpResponse.setHeader("Access-Control-Request-Headers", "Content-Type, Access-token, x-api-key, x-token");
-//            httpResponse.setHeader("Access-Control-Allow-Headers", "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,x-api-key,x-token");
-//            httpResponse.setHeader("Access-Control-Max-Age", "1728000"); // ,Authorization,X-Auth-Token
-//
-//           httpResponse.setHeader("Content-Length", "0");
-//            httpResponse.setHeader("Content-Type", "text/plain; charset=UTF-8");
-//
-//            return;
-//        }
+                header_Origin = httpRequest.getHeader("Origin").substring(0, httpRequest.getHeader("Origin").length()-1);
+            }
+        }
+//        log.info("header_Origin  = " + header_Origin + ",  httpRequest.getHeader(\"Origin\") = " +  httpRequest.getHeader("Origin"));
+        httpResponse.setHeader("Access-Control-Allow-Origin", header_Origin);
+//        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        if (httpRequest.getMethod().toLowerCase().equals( "options"))
+        {
+            httpResponse.setStatus(204);
+            httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+            httpResponse.setHeader("Access-Control-Request-Headers", "Content-Type");
+//            httpResponse.setHeader("Access-Control-Request-Headers", "Content-Type, Access-token, x-api-key, x-token");
+            httpResponse.setHeader("Access-Control-Allow-Headers", "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,x-api-key,x-token");
+            httpResponse.setHeader("Access-Control-Max-Age", "1728000"); // ,Authorization,X-Auth-Token
+
+           httpResponse.setHeader("Content-Length", "0");
+            httpResponse.setHeader("Content-Type", "text/plain; charset=UTF-8");
+
+            return;
+        }
         String requestURI = httpRequest.getRequestURI();
 //        log.info("-->dsfdsurl = " + requestURI);
         if (requestURI.matches("^/(api/v1).*$"))

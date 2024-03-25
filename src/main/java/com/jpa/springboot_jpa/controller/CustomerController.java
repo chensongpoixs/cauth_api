@@ -87,7 +87,7 @@ public class CustomerController {
                                    @ApiParam(value = " 增加客户信息", required = true)
                                        @Valid
                                    @RequestBody
-                                  final AddCustomerInfo addCustomerInfo
+                                    AddCustomerInfo addCustomerInfo
     ){
                             ResultData result = new ResultData();
         try{
@@ -292,9 +292,10 @@ public class CustomerController {
             else
             {
               List<Customer>  customerPage =   customerService.searchByname(searchCustomerInfo.getCompany_name(),0, 1000000, searchCustomerInfo.getSort());// searchCustomerInfo.getPage(), searchCustomerInfo.getPage_size(), searchCustomerInfo.getSort());
+               log.info("pa = " + String.valueOf(customerPage.size()));
                 int  total_pages = (customerPage.size() ) / searchCustomerInfo.getPage_size()+ ((customerPage.size() % searchCustomerInfo.getPage_size() == 0? 0: 1));;;
                 int  total_elements = customerPage.size();
-                int start_index = (searchCustomerInfo.getPage() + 1) * searchCustomerInfo.getPage_size();
+                int start_index = (searchCustomerInfo.getPage() ) * searchCustomerInfo.getPage_size();
                 List<Customer> new_customers = new ArrayList<>();
                 int count = 0;
                 for (Customer customer :customerPage)

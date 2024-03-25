@@ -44,7 +44,21 @@ public class AuthServiceImpl
         List<Auth> auths = null;
 
 
-        if (!name.isEmpty())
+        if(!name.isEmpty() && !system_code.isEmpty())
+        {
+            log.info("name === " + name + ", system_code = " + system_code);
+            if  (sort>0)
+            {
+
+                auths = authRepository.findByNameAndSystemAsc(name, system_code, 0, 100000);
+            }
+
+            else
+            {
+                auths = authRepository.findByNameAndSystemDesc(name, system_code, 0, 100000);
+            }
+        }
+        else if (!name.isEmpty())
         {
             log.info("name === " + name + ", system_code = " + system_code);
            if  (sort>0)
@@ -78,7 +92,7 @@ public class AuthServiceImpl
         {
             auths = authRepository.findByDesc(0, 100000);
         }
-
+        log.info("--auth_. db >>");
         if(auths.isEmpty())
         {
             return auths;
