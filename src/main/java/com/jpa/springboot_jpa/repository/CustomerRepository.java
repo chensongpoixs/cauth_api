@@ -24,7 +24,8 @@ public interface CustomerRepository extends JpaRepository<Customer,Integer> {
     public List<Customer> findByCompanyNameAsc(String name, Integer pageNumber, Integer pageSize);
     @Query(value ="select id, attributable_sales, company_name, create_timestamp, internal_code, region, used_system_code from t_customer where company_name LIKE  %?1% order by create_timestamp desc  limit ?2,?3",nativeQuery = true)
     public List<Customer> findByCompanyNameDesc(String name, Integer pageNumber,Integer pageSize);
-
+    @Query(value ="select id, attributable_sales, company_name, create_timestamp, internal_code, region, used_system_code from t_customer where company_name =  ?1",nativeQuery = true)
+    public Customer findByCompanyNameDesc(String name);
 
     @Query(value ="select u.id, u.attributable_sales, u.company_name, u.create_timestamp, u.internal_code, u.region, u.used_system_code from t_customer u     order by u.create_timestamp asc limit ?1,?2 ",nativeQuery = true)
     public List<Customer> findByAsc(Integer pageNumber,Integer pageSize);

@@ -108,7 +108,6 @@ public class AuthController
     }
 
 
-
     @ApiOperation(value = "修改授权信息")
     @RequestMapping(value = "/update_auth_info" , method = RequestMethod.POST)
     // @RequestMapping(value =  "/v1/login/username={username}/password={password}" , method = RequestMethod.GET)
@@ -127,6 +126,13 @@ public class AuthController
             {
                 result.setStatus(610);
                 result.setMsg("not find auth id ");
+                return result;
+            }
+             Customer  customerList =  customerService.findByName(authdb.get().getName() );
+            if (customerList== null)
+            {
+                result.setStatus(619);
+                result.setMsg("not find customer info failed !!! ");
                 return result;
             }
             customerService.updateAuthTimestamp(authdb.get().getName(), 0);

@@ -128,6 +128,12 @@ public class AuthServiceImpl
     }
 
 
+    public List<Auth> findSystemCode(String SystemCode)
+    {
+        return authRepository.findBySystemCode(SystemCode);
+    }
+
+
 //    public int  update(Auth auth)
 //    {
 //        return  authRepository.

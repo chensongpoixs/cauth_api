@@ -32,18 +32,20 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteById(Integer id) {
-          jpa.deleteById(id);
+        jpa.deleteById(id);
     }
 
-    public List<Customer>  searchByname(String name, int page, Integer page_size, Integer sort)
-    {
-        if (sort> 0)
-        {
+    public List<Customer> searchByname(String name, int page, Integer page_size, Integer sort) {
+        if (sort > 0) {
             return jpa.findByCompanyNameDesc(name, page, page_size);
         }
         return jpa.findByCompanyNameAsc(name, page, page_size);
     }
 
+    public Customer findByName(String name)
+    {
+        return jpa.findByCompanyNameDesc(name);
+    }
     @Transactional
     public int updateAuthTimestamp(String commpany_name, long timestamp)
     {

@@ -225,7 +225,7 @@ public class CustomerController {
                 result.setMsg("not find customer id ");
                 return result;
             }
-            if (customerdb.get().getUsed_system_code() > (System.currentTimeMillis()/1000))
+            if (customerdb.get().getUsed_system_code() > ((System.currentTimeMillis()/1000)))
             {
                 result.setStatus(611);
                 result.setMsg("   delete  filed !! use name !!!! ");
