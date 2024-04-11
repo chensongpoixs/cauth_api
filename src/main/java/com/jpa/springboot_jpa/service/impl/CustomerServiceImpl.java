@@ -51,6 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
     {
         return jpa.UpdateSystemCodeTime(timestamp, commpany_name);
     }
+
     public List<Customer>  SearchAll(  int sort )
     {
         if (sort> 0)

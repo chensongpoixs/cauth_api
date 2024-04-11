@@ -3,6 +3,7 @@ package com.jpa.springboot_jpa.repository;
 import com.jpa.springboot_jpa.pojo.Auth;
 import com.jpa.springboot_jpa.pojo.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -42,4 +43,7 @@ public interface AuthRepository extends JpaRepository<Auth,Integer>
     public List<Auth> findByName( String name);
     @Query(value ="select u.id, u.app_type, u.auth_timestamp, u.contacts, u.containers_num, u.cycle, u.expire_timestamp, u.name, u.province, u.register_timestamp, u.remarks, u.sdk_interface_manager, u.system_code, u.telephone,  u.video_fusion_num, u.client_device from t_auth_info u    where u.system_code =?1 ",nativeQuery = true)
     public List<Auth> findBySystemCode( String SystemCode);
+    @Modifying
+    @Query(value ="UPDATE t_auth_info  set name = ?2 where  name = ?1  ",nativeQuery = true)
+    public int UpdateCompayName( String company_name1, String company_name2);
 }

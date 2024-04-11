@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -133,7 +134,11 @@ public class AuthServiceImpl
         return authRepository.findBySystemCode(SystemCode);
     }
 
-
+    @Transactional
+    public int UpdateCompayName(String commpay_name1, String commpay_name2)
+    {
+        return authRepository.UpdateCompayName(commpay_name1, commpay_name2);
+    }
 //    public int  update(Auth auth)
 //    {
 //        return  authRepository.

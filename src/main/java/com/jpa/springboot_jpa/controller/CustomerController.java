@@ -149,6 +149,10 @@ public class CustomerController {
             }
             if (!updateCustomerInfo.getCompany_name().isEmpty())
             {
+                if(customerdb.get().getCompany_name() != updateCustomerInfo.getCompany_name())
+                {
+                    authService.UpdateCompayName(customerdb.get().getCompany_name(), updateCustomerInfo.getCompany_name());
+                }
                 customerdb.get().setCompany_name(updateCustomerInfo.getCompany_name());
             }
             if (!updateCustomerInfo.getAttributable_sales().isEmpty())
